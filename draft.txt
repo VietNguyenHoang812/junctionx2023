@@ -1,0 +1,22 @@
+    fr_arr=[frame1, frame2, frame3, frame4]
+    for i_, fr in enumerate(fr_arr):
+        if fr is None:
+            continue
+        fr_arr[i_] = cv2.resize(fr, (512, 288))
+
+    #-------------------------------------------------------------alert ------------------------------------------
+    detect_batches=None
+    if opt.alert_outline:
+        
+        tmp=torch.from_numpy(np.array(fr_arr))
+        tmp=torch.permute(tmp, (0,3,1,2))
+        detect_batches = model_yolov5s(tmp).pandas().xyxy[0]
+        print("///////////////////////////////////////")
+        print(tmp.shape)
+        print(detect_batches)
+        
+        
+        #take out person class
+        detect_batches = detect_batches[detect_batches[:,-1]==0]
+
+    #-------------------------------------------------------------------------------------------------------------
